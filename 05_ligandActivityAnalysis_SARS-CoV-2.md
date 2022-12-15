@@ -139,7 +139,7 @@ DDS_A549_ligands <-
 
 After checking the overlap between over-expressed ligands in the
 different cell lines, we decided to continue with the analysis using
-CALU3, since it has the larger number of over-expressed ligands.
+CALU3, <span style="color:red">**since it has the larger number of over-expressed ligands**.</span>/. Plot is on the original one.
 
 ``` r
 Venn_plot <- draw.triple.venn(length(DDS_NHBE_ligands), 
@@ -193,8 +193,7 @@ length(expressed_genes_receiver)
 
 To establish a gene set of interest, we perform a Gene set Enrichment
 analysis (GSEA) and we check among the most appealing overrepresanted
-signatures upon SARS-CoV-2 infection. We remove the differentially
-expressed ligands from this comparison.
+signatures upon SARS-CoV-2 infection. <span style="color:red">We remove the differentially expressed ligands from this comparison.</span>
 
 ``` r
 ranks <- readRDS("Results/dds_results_CALU3vsCOV2.rds") %>%
@@ -264,7 +263,13 @@ One of the most interesting results is inflamatory response. So, we
 define the leading edge genes involved in the inflamatory response as
 the target genes, i.e. we want to see how likely is that the secreted
 ligands have an effect in this inflamatory response.
+*****
+```DDS_CALU3_ligands``` is the overexpressed genes, that are identified at the begining.
 
+```geneset_oi``` is the intersection of the inflammatory genes and the rownmaes of ```ligand_target_matrix```
+
+```background_expressed_genes``` are the intersect of anything expressed in CALU3 and rownames of `ligand_target_matrix`
+*****
 ``` r
 ## I am going to check with Inflamatory genes
 InflamatoryGenes <- SignificantResults %>% 
@@ -293,6 +298,7 @@ Over-expressed in CALU3 after SARS-CoV-2 infection and 2) can bind a
 ligand-receptor links were gathered from Omnipath ligand-receptor data
 sources.
 
+**Some filteration in here**
 ``` r
 receptors <- unique(lr_network$to)
 expressed_receptors <- intersect(receptors,expressed_genes_receiver)
@@ -324,10 +330,14 @@ head(potential_ligands)
 ## Step 4: Perform NicheNet’s ligand activity analysis on the gene set of interest
 
 In this section, we calculate the ligand activity of each ligand, or in
-other words, we will assess how well each over-expressed ligand after
+other words, **we will assess how well each over-expressed ligand after
 viral infection can predict the inflatmatory response gene set compared
 to the background of expressed genes (predict whether a gene belongs to
-the inflatmatory response program or not).
+the inflatmatory response program or not).**
+*****
+```geneset_oi``` is the intersection of the inflammatory genes and the rownmaes of ```ligand_target_matrix```
+
+```background_expressed_genes``` are the intersect of anything expressed in CALU3 and rownames of `ligand_target_matrix`
 
 ``` r
 ligand_activities <- predict_ligand_activities(
@@ -391,6 +401,7 @@ saveRDS(ligand_activities,file = "Results/LigandActivityScoreDistribution.rds")
 ```
 
 ## Step 5: Infer target genes of top-ranked ligands and visualize in a heatmap
+**n x m matrix, where n is the number of ligands and m is the total number of genes, with each entry representing the likelihood that the ligand can regulate the expression of the target gene.**
 
 Now we will show how you can look at the regulatory potential scores
 between ligands and target genes of interest. In this case, we will look
@@ -399,8 +410,8 @@ genes. In the ligand-target heatmaps, we show here regulatory potential
 scores for interactions between the 12 top-ranked ligands and following
 target genes: genes that belong to the gene set of interest and to the
 250 most strongly predicted targets of at least one of the 12 top-ranked
-ligands (the top 250 targets according to the general prior model, so
-not the top 250 targets for this dataset). Consequently, genes of your
+ligands <span style="color:red">**(the top 250 targets according to the general prior model, so
+not the top 250 targets for this dataset).**</span> Consequently, genes of your
 gene set that are not a top target gene of one of the prioritized
 ligands, will not be shown on the heatmap.
 
@@ -498,7 +509,11 @@ potentially bind to the prioritized ligands.
 
 So, we will now infer the predicted ligand-receptor interactions of the
 top-ranked ligands and visualize these in a heatmap.
+********
+best_upstream_ligands=top 12 based on pearson value
 
+**weighted network:** building two different networks (a directed weighted ligand-signaling network and a directed weighted gene regulatory network) to model protein-protein interactions and gene regulatory interactions, respectively. The weight of an edge between two nodes in the network represents the amount of evidence that the source node signals to the target node. The networks are built by aggregating the data from multiple sources, and the weights of the edges are calculated based on the contribution of each data source to the model's performance. This process allows for noisy, non-informative data sources to be removed from the model. The weights of the data sources are determined using a multi-objective optimization method to maximize the performance of the model.
+********
 ``` r
 ## get the ligand-receptor network of the top-ranked ligands
 lr_network_top <- lr_network %>% 
