@@ -63,7 +63,15 @@ expressed by infected cells can have an influence on the expression of
 target genes in the same cell lines (Autocrine view). In particular, we
 will focus on the inflamatory response potentially induced by this
 ligands.
+**************
+It performs a differential expression analysis to compare:
 
+Human lung epithelial cells (NHBE): mock treated vs infected with SARS-CoV-2.
+
+A549 alveolar cancer cell line: mock treated vs infected with SARS-CoV-2.
+
+Calu-3 human lung epithelial cancer cell line: mock treated vs infected with SARS-CoV-2.
+**************
 ## Step 0: NicheNet’s ligand-target prior model and expression data of interacting cells
 
 We first loaded the required packages
